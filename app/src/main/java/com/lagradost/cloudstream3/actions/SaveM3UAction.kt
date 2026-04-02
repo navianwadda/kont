@@ -74,10 +74,15 @@ class SaveM3UAction : VideoClickAction() {
                 }
             }
 
-            link.headers["User-Agent"]?.let { text += "\n#EXTVLCOPT:http-user-agent=$it" }
-            link.headers["Referer"]?.let  { text += "\n#EXTVLCOPT:http-referrer=$it" }
-            link.headers["Cookie"]?.let   { text += "\n#EXTVLCOPT:http-cookie=$it" }
-            link.headers["Origin"]?.let   { text += "\n#EXTVLCOPT:http-origin=$it" }
+            link.headers.forEach { (key, value) ->
+                when (key) {
+                    "User-Agent" -> text += "\n#EXTVLCOPT:http-user-agent=$value"
+                    "Referer"    -> text += "\n#EXTVLCOPT:http-referrer=$value"
+                    "Cookie"     -> text += "\n#EXTVLCOPT:http-cookie=$value"
+                    "Origin"     -> text += "\n#EXTVLCOPT:http-origin=$value"
+                    else         -> text += "\n#EXTVLCOPT:http-header-add=$key: $value"
+                }
+            }
 
             text += "\n${link.url}"
         }
